@@ -49,7 +49,9 @@ def zscore(s: pd.Series) -> pd.Series:
 with st.status("Querying ACS for Philadelphia tracts…", expanded=False) as status:
     base = "https://api.census.gov/data/2022/acs/acs5"
     edu_vars = [f"B15003_{i:03d}E" for i in range(1, 26)]
-    age_vars = [f"B01001_{i:03d}E" for i in range(1, 50)]
+    # Only request the specific age variables we actually use:
+    # B01001_001E (total pop), B01001_003-009E (male under 18), B01001_027-033E (female under 18)
+    age_vars = ["B01001_001E"] + [f"B01001_{i:03d}E" for i in range(3, 10)] + [f"B01001_{i:03d}E" for i in range(27, 34)]
     inc_var  = ["B19013_001E"]
     vars_all = ",".join(edu_vars + age_vars + inc_var)
     params = {
